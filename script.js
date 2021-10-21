@@ -17,7 +17,6 @@ const video = document.getElementById('video');
 async function start() {
     console.log('inició start')
     const labeledFaceDescriptors = await loadLabeledImages()
-    console.log('luego await')
     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
     navigator.getUserMedia = (navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
