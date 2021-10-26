@@ -1,18 +1,26 @@
 let faces = ['DelavalleCristian', 'CardozoGustavo', 'OderaMaica', 'BritoIan', 'JimRhodes', 'DeLavalleMaria', 'TonyStark']
 
-
-
 Promise.all([
-    faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-    faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-    faceapi.nets.ageGenderNet.loadFromUri('/models'),
-    faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-    faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+
+    faceapi.nets.tinyFaceDetector.loadFromUri('static/models'),
+    faceapi.nets.faceLandmark68Net.loadFromUri('static/models'),
+    faceapi.nets.faceExpressionNet.loadFromUri('static/models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('static/models'),
+    faceapi.nets.ssdMobilenetv1.loadFromUri('static/models')
 
 ]).then(start)
 
 const video = document.getElementById('video');
+
+var p = navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+
+p.then(function(mediaStream) {
+    var video = document.querySelector('video');
+    video.src = window.URL.createObjectURL(mediaStream);
+    video.onloadedmetadata = function(e) {
+        // Do something with the video here.
+    };
+});
 
 async function start() {
     console.log('inició start')
@@ -35,7 +43,7 @@ async function start() {
         document.body.append(canvas);
         const displaySize = { width: video.width, height: video.height };
         faceapi.matchDimensions(canvas, displaySize);
-        setInterval(async() => {
+        const timeValue = setInterval(async() => {
             const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
             const dist = faceapi.euclideanDistance([0, 0], [0, 10])
             canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
@@ -46,10 +54,33 @@ async function start() {
                 const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
                 drawBox.draw(canvas)
                 const dist = faceapi.euclideanDistance([0, 0], [0, 10])
+                    // esto es lo que tenés que mandar -- console.log(result.toString())
+                const nombre = result.toString().substring(0, result.toString().length - 7);
+                if (nombre != 'unknown') {
+                    var url = 'http://localhost:5500/sendphotos';
+                    var data = { username: result.toString() };
+
+                    fetch(url, {
+                            method: 'POST', // or 'PUT'
+                            body: JSON.stringify(data), // data can be `string` or {object}!
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(res => res.json())
+                        .catch(error => console.error('Error:', error))
+                        .then(response => console.log('Success:', response));
+                    clearInterval(timeValue)
+                    return
+                }
+
+
+
+
             })
-        }, 150);
+        }, 3000);
     });
 }
+
 
 async function loadLabeledImages() {
     console.log('inició load')
