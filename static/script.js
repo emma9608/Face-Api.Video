@@ -12,16 +12,6 @@ Promise.all([
 
 const video = document.getElementById('video');
 
-var p = navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-
-p.then(function(mediaStream) {
-    var video = document.querySelector('video');
-    video.src = window.URL.createObjectURL(mediaStream);
-    video.onloadedmetadata = function(e) {
-        // Do something with the video here.
-    };
-});
-
 async function start() {
     console.log('inició start')
     const labeledFaceDescriptors = await loadLabeledImages()
@@ -56,7 +46,7 @@ async function start() {
                 const dist = faceapi.euclideanDistance([0, 0], [0, 10])
                     // esto es lo que tenés que mandar -- console.log(result.toString())
                 const nombre = result.toString().substring(0, result.toString().length - 7);
-                if (nombre != 'unknown') {
+                if (nombre !== 'unknown') {
                     var url = 'http://localhost:5500/sendphotos';
                     var data = { username: result.toString() };
 
