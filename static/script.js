@@ -1,5 +1,6 @@
 let faces = ['DelavalleCristian', 'CardozoGustavo', 'OderaMaica', 'BritoIan', 'JimRhodes', 'DeLavalleMaria', 'TonyStark']
-
+var probanding = probanding.app.js;
+console.log(probanding)
 Promise.all([
 
     faceapi.nets.tinyFaceDetector.loadFromUri('static/models'),
@@ -7,11 +8,8 @@ Promise.all([
     faceapi.nets.faceExpressionNet.loadFromUri('static/models'),
     faceapi.nets.faceRecognitionNet.loadFromUri('static/models'),
     faceapi.nets.ssdMobilenetv1.loadFromUri('static/models')
-
 ]).then(start)
-
 const video = document.getElementById('video');
-
 async function start() {
     console.log('inició start')
     const labeledFaceDescriptors = await loadLabeledImages()

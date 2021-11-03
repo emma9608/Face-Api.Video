@@ -2,18 +2,24 @@ const express = require('express');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const cors = require('cors');
+var request = require('request');
 const faceapi = require('face-api.js');
 let mimeTypes = require('mime-types');
 let bodyParser = require('body-parser');
+const { stringify } = require('querystring');
 
 //InitializationsNPM
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
+app.use(cors({
+    origin: '*',
+}));
 let http = require('http').Server(app);
-app.use("/static", express.static('./static/'));
+
+
 
 //Settings
 app.set('port', process.env.PORT || 5500);
@@ -29,8 +35,17 @@ app.set('view engine', '.hbs');
 
 //Middlewares
 app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.json({ limit: '80mb' }, { extended: true }));
+app.use(express.urlencoded({ limit: '80mb' }, { extended: true }));
+app.post((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+app.use("/static", express.static('./static/'));
 
 
 //Global Variables
@@ -48,24 +63,24 @@ app.get('/', (req, res) => {
 
 
 });
+
 app.use(require('./routes'));
 
-
-// method to res photos
-
+// method to recept photos
 app.post('/sendphotos', (req, res) => {
+    console.log('recibimos algo');
     res.send('datos recibidos');
-
-    console.log(req.body.username)
-
-
+    //console.log(req.body);
+    let foto = req.body;
+    app.get('/mostrarfoto', (req, res) => {
+        res.send(foto);
+        //res.redirect('/pagina');
+    });
 });
-
 
 //Public
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 //Starting Server
 app.listen(app.get('port'), () => {

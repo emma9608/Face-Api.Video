@@ -8,6 +8,7 @@
         "body-parser": "^1.19.0",
         "canvas": "^2.8.0",
         "connect-flash": "^0.1.1",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "express-handlebars": "^5.3.4",
         "express-mysql-session": "^2.1.7",
@@ -20,6 +21,7 @@
         "nodemon": "^2.0.14",
         "passport": "^0.5.0",
         "passport-local": "^1.0.0",
+        "request": "^2.88.2",
         "timeago.js": "^4.0.2"
     },
     "devDependencies": {},
