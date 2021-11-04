@@ -13,6 +13,7 @@ const { stringify } = require('querystring');
 
 const app = express();
 
+var foto = ''
 
 app.use(cors({
     origin: '*',
@@ -53,16 +54,8 @@ app.use((req, res, next) => {
 
     next();
 });
-
-
 //Routes
 
-app.get('/', (req, res) => {
-
-    res.sendFile(path.join(__dirname, '/index.html'));
-
-
-});
 
 app.use(require('./routes'));
 
@@ -71,7 +64,13 @@ app.post('/sendphotos', (req, res) => {
     console.log('recibimos algo');
     res.send('datos recibidos');
     //console.log(req.body);
-    let foto = req.body;
+    foto = req.body;
+    app.get('/', (req, res) => {
+
+        res.sendFile(path.join(__dirname, '/index.html'));
+
+
+    });
     app.get('/mostrarfoto', (req, res) => {
         res.send(foto);
         //res.redirect('/pagina');

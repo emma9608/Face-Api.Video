@@ -1,6 +1,4 @@
 let faces = ['DelavalleCristian', 'CardozoGustavo', 'OderaMaica', 'BritoIan', 'JimRhodes', 'DeLavalleMaria', 'TonyStark']
-var probanding = probanding.app.js;
-console.log(probanding)
 Promise.all([
 
     faceapi.nets.tinyFaceDetector.loadFromUri('static/models'),
